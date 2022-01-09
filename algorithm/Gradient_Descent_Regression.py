@@ -9,7 +9,6 @@ import statsmodels.api as sm
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler
 
-
 def read_data():
     train_df = pd.read_csv('weatherAUS.csv')
     a = train_df.head()
