@@ -1,9 +1,11 @@
 import pandas as pd
+from algorithm.XGBoost import XGBoost
 import numpy as np
 import statsmodels.api as sm
 from sklearn.model_selection import train_test_split
 from random import randint
 from algorithm.GradientDescending import GradientDescending
+
 
 from algorithm.LeastSquares import LeastSquare
 
@@ -156,9 +158,17 @@ def gradientDescending(x_train, x_test, y_train, y_test, predictSample, noIter, 
     gd.accuracyTool()
     print("##########################################################")
 
+def xgboost(x_train, x_test, y_train, y_test,predictSample):
+    xgb = XGBoost(x_train, y_train, x_test, y_test)
+    print("Tool: Rain tomorrow?", xgb.predictTool(predictSample))
+    xgb.accuracyTool()
+    print("##########################################################")
+
 def main():
     x_train, x_test, y_train, y_test, predictSample = readData("./data/weatherAUS.csv")
     #leastSquares(x_train, x_test, y_train, y_test, predictSample)
-    gradientDescending(x_train, x_test, y_train, y_test, predictSample, 100, 0.01)
+    # gradientDescending(x_train, x_test, y_train, y_test, predictSample, 100, 0.01)
+    xgboost(x_train, x_test, y_train, y_test,predictSample)
+
 
 main()
