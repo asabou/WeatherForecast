@@ -5,6 +5,7 @@ import statsmodels.api as sm
 from sklearn.model_selection import train_test_split
 from random import randint
 from algorithm.GradientDescending import GradientDescending
+import math
 
 
 from algorithm.LeastSquares import LeastSquare
@@ -101,9 +102,11 @@ def readData(filename):
     data["Temp3pm"].fillna(median, inplace=True)
     temp3pm = data["Temp3pm"]
 
+    data["RainToday"] = generateRandomResponseForNan(data["RainToday"])
     rainToday = data["RainToday"].astype("category").cat.codes
     rainToday = pd.Series(rainToday)
 
+    data["RainTomorrow"] = generateRandomResponseForNan(data["RainTomorrow"])
     rainTomorrow = data["RainTomorrow"].astype("category").cat.codes
     rainTomorrow = pd.Series(rainTomorrow)
 
@@ -115,6 +118,13 @@ def readData(filename):
     predictSample = getPredictSample(x1, brutData)
     x_train, x_test, y_train, y_test = train_test_split(x1, y1)
     return x_train, x_test, y_train, y_test, predictSample
+
+def generateRandomResponseForNan(data):
+    for i in range(len(data)):
+        if type(data[i]) == float:
+            r = "Yes" if randint(0, 1000) % 2 == 0 else "No"
+            data[i] = r
+    return data
 
 def avgForPositives(data):
     s = 0
@@ -152,8 +162,8 @@ def leastSquares(x_train, x_test, y_train, y_test, predictSample):
 
 def gradientDescending(x_train, x_test, y_train, y_test, predictSample, noIter, learningRate):
     gd = GradientDescending(x_train, y_train, x_test, y_test, noIter, learningRate)
-    #print("Tool: Rain tomorrow?  ", gd.predictTool(predictSample))
-    print("Manual: Rain tomorrow?", gd.predictManual(predictSample))
+    print("Tool: Rain tomorrow?  ", gd.predictTool(predictSample))
+    #print("Manual: Rain tomorrow?", gd.predictManual(predictSample))
     #gd.accuracyManual()
     gd.accuracyTool()
     print("##########################################################")
@@ -166,9 +176,8 @@ def xgboost(x_train, x_test, y_train, y_test,predictSample):
 
 def main():
     x_train, x_test, y_train, y_test, predictSample = readData("./data/weatherAUS.csv")
-    #leastSquares(x_train, x_test, y_train, y_test, predictSample)
-    # gradientDescending(x_train, x_test, y_train, y_test, predictSample, 100, 0.01)
+    leastSquares(x_train, x_test, y_train, y_test, predictSample)
+    gradientDescending(x_train, x_test, y_train, y_test, predictSample, 100, 0.01)
     xgboost(x_train, x_test, y_train, y_test,predictSample)
-
 
 main()
