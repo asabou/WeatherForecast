@@ -1,1 +1,2 @@
 # WeatherForecast
+AI prediction algorithms
